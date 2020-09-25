@@ -2,5 +2,5 @@
 from Robot import *
 
 robot=Robot()
-robot.turn(-90, 100)
-
+robot.drive(35, 500)
+robot.drive(15, 20)
