@@ -44,8 +44,8 @@ class Robot():
             errorGyro=currentDegrees-startDegrees
             print(self.gyroSensor.angle())
             # Do the ramp speed stuff   
-            rampSpeed=sin(abs(self.rightMotor.angle()) / rotation * 3.14) + 20
-            self.moveSteering(errorGyro*kSteering,rampSpeed * speed)
+            rampSpeed=sin(abs(self.rightMotor.angle()) / rotation * 3.14)
+            self.moveSteering(errorGyro*kSteering, rampSpeed * speed + copysign(20, speed))
 
 
         # Exit
@@ -54,15 +54,17 @@ class Robot():
     def turn(self, angle, speed, time=5):
         # Startup
         steering = 100
-        kTurn=0.02      
+        kTurn=0.01
+        offset = 20
+        timer = StopWatch()   
         # Loop
-        while abs(self.gyroSensor.angle() - angle) > 2:
+        while (abs(self.gyroSensor.angle() - angle) > 2)  & (timer.time() < time * 1000):
             error = self.gyroSensor.angle() - angle
             #if error > 0 : 
             #    steering = 100
             #else:
             #    steering = -100
-            self.moveSteering(steering, speed * error * kTurn)
+            self.moveSteering(steering, speed * error * kTurn + copysign(offset,error))
         # Exit
         self.stop()
 
