@@ -84,12 +84,3 @@ class Robot():
         # 3 options: Stop.BRAKE, Stop.COAST, Stop.HOLD
         self.rightMotor.stop(brake)
         self.leftMotor.stop(brake)
-
-    
-
-
-# Create your objects here.
-ev3 = EV3Brick()
-
-
-# Write your program here.
