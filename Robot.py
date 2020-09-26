@@ -8,6 +8,11 @@ from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 from math import copysign, sin
 
+class LightSensor(ColorSensor):
+    def light():
+        return sum(self.rgb())
+
+    def white()    
 
 class Robot():
     def __init__(self):
@@ -78,7 +83,16 @@ class Robot():
         pass
     
     def drive2Line(self, speed, distanceBefore, distanceAfter):
-        pass
+        # Startup
+        self.drive(distanceBefore, speed)
+        
+        # Loop
+        while self.rightSensor.reflection() < 90:
+            self.moveSteering(0, 70)
+
+        # Exit
+        self.drive(distanceAfter, speed)
+
     
     def stop(self, brake=Stop.BRAKE):
         # 3 options: Stop.BRAKE, Stop.COAST, Stop.HOLD
