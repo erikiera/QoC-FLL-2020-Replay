@@ -45,8 +45,6 @@ class LightSensor(ColorSensor):
         self.waitForWhite()
         self.waitForBlack()
 
-    def newRaw(self):
-        pass
 
 class Robot():
     def __init__(self):
