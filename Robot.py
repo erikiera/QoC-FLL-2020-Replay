@@ -9,10 +9,44 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 from math import copysign, sin
 
 class LightSensor(ColorSensor):
-    def light():
+    low=0
+    high=120
+    black = 20
+    white = 80
+
+    def __init__(self):
+        black = self.low + (self.high-self.low)*.2
+        white = self.low + (self.high-self.low)*.8
+        
+    def light(self):
         return sum(self.rgb())
 
-    def white()    
+    def isWhite(self):
+        if self.light()>=self.white:
+            return True
+        else:
+            return False
+
+    def isBlack(self):
+        if self.light()<=self.black:
+            return True
+        else:
+            return False
+
+    def waitForWhite(self):
+        while not self.isWhite():
+            pass
+
+    def waitForBlack(self):
+        while not self.isBlack():
+            pass
+
+    def waitForLine(self):
+        self.waitForWhite()
+        self.waitForBlack()
+
+    def newRaw(self):
+        pass
 
 class Robot():
     def __init__(self):
@@ -23,6 +57,7 @@ class Robot():
         self.leftSensor=ColorSensor(Port.S2)
         self.rightSensor=ColorSensor(Port.S3)
         self.gyroSensor=GyroSensor(Port.S1)
+        self.gyroSensor.reset_angle(0)
 
     def moveSteering(self, steering, speed):
         leftMotorSpeed = speed * min(1, 0.02 * steering + 1)
@@ -47,11 +82,9 @@ class Robot():
             # Do the gyro steering stuff
             currentDegrees=self.gyroSensor.angle()
             errorGyro=currentDegrees-startDegrees
-            print(self.gyroSensor.angle())
             # Do the ramp speed stuff   
             rampSpeed=sin(abs(self.rightMotor.angle()) / rotation * 3.14)
             self.moveSteering(errorGyro*kSteering, rampSpeed * speed + copysign(20, speed))
-
 
         # Exit
         self.stop()
@@ -85,7 +118,7 @@ class Robot():
     def drive2Line(self, speed, distanceBefore, distanceAfter):
         # Startup
         self.drive(distanceBefore, speed)
-        
+
         # Loop
         while self.rightSensor.reflection() < 90:
             self.moveSteering(0, 70)
