@@ -56,10 +56,10 @@ class Robot():
         self.leftMotor=Motor(Port.C)
         self.rightMotor=Motor(Port.B)
 
-        if path.exists('calibrate.py'):
-            import calibrate
-            self.leftSensor=LightSensor(Port.S3, calibrate.leftLow, calibrate.leftHigh)
-            self.rightSensor=LightSensor(Port.S2, calibrate.rightLow, calibrate.rightHigh)
+        if path.exists('sensorpoints.py'):
+            import sensorpoints
+            self.leftSensor=LightSensor(Port.S3, sensorpoints.leftLow, sensorpoints.leftHigh)
+            self.rightSensor=LightSensor(Port.S2, sensorpoints.rightLow, sensorpoints.rightHigh)
 
         else: 
             self.leftSensor=LightSensor(Port.S3, 10, 105)
@@ -88,14 +88,14 @@ class Robot():
                 leftLow = self.leftSensor.light()
         self.stop()
         # write results to file
-        with open('calibrate.py', 'w') as myFile:
+        with open('sensorpoints.py', 'w') as myFile:
             myFile.write('leftLow = ')
             myFile.write(str(leftLow))
-            myFile.write('\nrightLow = ', rightLow)
+            myFile.write('\nrightLow = ')
             myFile.write(str(rightLow))
-            myFile.write('\nleftHigh = ', leftHigh)
+            myFile.write('\nleftHigh = ')
             myFile.write(str(leftHigh))
-            myFile.write('\nrightHigh = ', rightHigh)
+            myFile.write('\nrightHigh = ')
             myFile.write(str(rightHigh))
         
     def moveSteering(self, steering, speed):
@@ -142,16 +142,43 @@ class Robot():
         # Exit
         self.stop()
 
-    def lineFollow2Line(self, speed, rightSide=True, rightStop=True):
+    def lineFollow2Line(self, speed, rightSide=True, rightFollow=True):
+        # Startup
+        if rightFollow:
+            followSensor = self.rightSensor
+            stopSensor = self.leftSensor
+        else:
+            followSensor = self.leftSensor
+            stopSensor = self.rightSensor
+        lastError = 0
         # Loop
         while not self.leftSensor.isWhite():
-            error = self.rightSensor.line - self.rightSensor.light()
-            correction = error * 0.3
-            self.moveSteering(correction, speed)
+            error = followSensor.line - followSensor.light()
+            pCorrection = error * 0.5
+            dError = lastError - error
+            dCorrection = dError * 5
+            self.moveSteering(pCorrection - dCorrection, speed)
+            lastError = error
         self.stop()
 
     def lineFollow4Time(self, speed, time, rightSide=True):
         pass
+        timer = StopWatch()
+        lastError = 0
+        # Loop
+        while timer.time() < time:
+            # Good: p = 0.8, d = 1, wait(10)
+            # Maybe better: p= 0.7, d= 2.0, wait(10)
+            # Fast: p= 0.4, d= 3.0
+            error = self.rightSensor.line - self.rightSensor.light()
+            pCorrection = error * 0.4
+            dError = lastError - error
+            dCorrection = dError * 3.0
+            self.moveSteering(pCorrection - dCorrection, speed)
+            print("p= ", error, "\td= ", dError, "\tpCorr= ", pCorrection, "\tdCorr= ",dCorrection, "\tSteer= ", pCorrection - dCorrection)
+            lastError = error
+            wait(10)
+        self.stop()
 
     def turn2Line(self, speed, time=5):
         self.moveSteering(100,speed)
@@ -166,7 +193,7 @@ class Robot():
         #while self.rightSensor.rgb() < 90:
         #    self.moveSteering(0, 70)
         # Start Driving
-        self.moveSteering(0, 70)
+        self.moveSteering(0, 250)
         # execute function wait until we detect a line
         self.rightSensor.waitForLine()
         self.stop()
@@ -179,6 +206,10 @@ class Robot():
         self.rightMotor.stop(brake)
         self.leftMotor.stop(brake)
 
+
+    # Good: p = 0.8, d = 1, wait(10)
+    # Maybe better: p= 0.7, d= 2.0, wait(10)
+    # Fast: p= 0.4, d= 3.0
 
 
 
