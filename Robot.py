@@ -7,7 +7,6 @@ from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 from math import copysign, sin
-from pybricks.iodevices import Ev3devSensor
 from os import path
 
 
@@ -18,7 +17,7 @@ class LightSensor(ColorSensor):
 
     def __init__(self, port, low = 10, high = 120):
         super().__init__(port)
-        self.black = low + (high-low)*.2
+        self.black = low + (high-low)*.25
         self.white = low + (high-low)*.8
         self.line = low + (high-low)*.5
 
@@ -33,12 +32,14 @@ class LightSensor(ColorSensor):
 
     def isBlack(self):
         if self.light()<=self.black:
+           # brick.sound.beep(300, 10, 20)
             return True
         else:
             return False
 
     def waitForWhite(self):
         while not self.isWhite():
+            #brick.sound.beep(300, 10, 20)
             pass
 
     def waitForBlack(self):
@@ -51,6 +52,7 @@ class LightSensor(ColorSensor):
     
 class Robot():
     def __init__(self):
+        self.brick = EV3Brick()
         self.frontMotor=Motor(Port.D)
         self.rearMotor=Motor(Port.A)
         self.leftMotor=Motor(Port.C)
@@ -66,10 +68,15 @@ class Robot():
             self.rightSensor=LightSensor(Port.S2, 20, 160)
 
         self.gyroSensor=GyroSensor(Port.S1)
-        self.gyroSensor.reset_angle(0)
-        self.testSensor = Ev3devSensor(Port.S3)
+        wait(100)
+        self.gyroSensor.speed()
+        self.gyroSensor.angle()
+        wait(500)
+        self.gyroSensor.reset_angle(0.0)
+        wait(200)
 
     def calibrate(self):
+        self.brick.speaker.play_file('calibratesong.wav')
         rightHigh = 40
         rightLow = 70
         leftHigh = 40
@@ -104,24 +111,24 @@ class Robot():
         self.leftMotor.run(leftMotorSpeed)
         self.rightMotor.run(rightMotorSpeed)
 
-    def drive(self, distance, speed, time=8):
+    def drive(self, distance, speed, time=8): 
         # Startup for gyro
-        kSteering=5     # Steering coefficient
+        kSteering=1     # Steering coefficient
         startDegrees=self.gyroSensor.angle()
         # Startup for ramp speed
         if distance < 0 :
             distance = abs(distance)
             speed = -speed
-        rotation= distance*2*3.14*6.28
+        rotation= distance*51.9
         self.rightMotor.reset_angle(0)
         #  Loop
-        while abs(self.rightMotor.angle()) < abs(rotation)  :
+        while abs(self.rightMotor.angle()) < abs(rotation) :
             # Do the gyro steering stuff
             currentDegrees=self.gyroSensor.angle()
             errorGyro=currentDegrees-startDegrees
             # Do the ramp speed stuff   
-            rampSpeed=sin(abs(self.rightMotor.angle()) / rotation * 3.14)
-            self.moveSteering(errorGyro*kSteering*copysign(1, speed), rampSpeed * speed + copysign(20, speed))
+            rampSpeed=min(sin(abs(self.rightMotor.angle()) / rotation * 3.14), abs(speed)-100)
+            self.moveSteering(errorGyro*kSteering*copysign(1, speed), rampSpeed * speed + copysign(100, speed))
         # Exit
         self.stop()
 
@@ -163,6 +170,10 @@ class Robot():
 
     def lineFollow4Time(self, speed, time, rightSide=True):
         pass
+        if rightSide:
+            kSide = 1
+        else:
+            kSide = -1
         timer = StopWatch()
         lastError = 0
         # Loop
@@ -171,18 +182,22 @@ class Robot():
             # Maybe better: p= 0.7, d= 2.0, wait(10)
             # Fast: p= 0.4, d= 3.0
             error = self.rightSensor.line - self.rightSensor.light()
-            pCorrection = error * 0.4
+            pCorrection = error * 0.2
             dError = lastError - error
-            dCorrection = dError * 3.0
-            self.moveSteering(pCorrection - dCorrection, speed)
+            dCorrection = dError * 0.2
+            self.moveSteering((pCorrection - dCorrection)*kSide, speed)
             print("p= ", error, "\td= ", dError, "\tpCorr= ", pCorrection, "\tdCorr= ",dCorrection, "\tSteer= ", pCorrection - dCorrection)
             lastError = error
             wait(10)
         self.stop()
 
-    def turn2Line(self, speed, time=5):
-        self.moveSteering(100,speed)
-        self.rightSensor.waitForLine()
+    def turn2Line(self, speed, rightStop = True, time=5):
+        if rightStop:
+            stopSensor = self.rightSensor
+        else:
+            stopSensor = self.leftSensor
+        self.moveSteering(100, speed)
+        stopSensor.waitForLine()
         self.stop()
     
     def drive2Line(self, speed, distanceBefore, distanceAfter):
