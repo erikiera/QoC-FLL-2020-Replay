@@ -111,9 +111,9 @@ class Robot():
         self.leftMotor.run(leftMotorSpeed)
         self.rightMotor.run(rightMotorSpeed)
 
-    def drive(self, distance, speed, time=8): 
+    def drive(self, distance, speed, time=8, kSteering=1): 
         # Startup for gyro
-        kSteering=1     # Steering coefficient
+        #kSteering=5     # Steering coefficient
         startDegrees=self.gyroSensor.angle()
         # Startup for ramp speed
         if distance < 0 :
@@ -157,19 +157,28 @@ class Robot():
         else:
             followSensor = self.leftSensor
             stopSensor = self.rightSensor
+        if rightSide:
+            kSide = 1
+        else:
+            kSide = -1
+
         lastError = 0
         # Loop
         while not self.leftSensor.isWhite():
             error = followSensor.line - followSensor.light()
-            pCorrection = error * 0.5
+            pCorrection = error * 0.25
             dError = lastError - error
-            dCorrection = dError * 5
-            self.moveSteering(pCorrection - dCorrection, speed)
+            dCorrection = dError * 1.25
+            self.moveSteering((pCorrection - dCorrection)*kSide, speed)
             lastError = error
         self.stop()
 
-    def lineFollow4Time(self, speed, time, rightSide=True):
-        pass
+    def lineFollow4Time(self, speed, time, rightSide=True, rightFollow=True):
+            # Startup
+        if rightFollow:
+            followSensor = self.rightSensor
+        else:
+            followSensor = self.leftSensor
         if rightSide:
             kSide = 1
         else:
@@ -177,18 +186,13 @@ class Robot():
         timer = StopWatch()
         lastError = 0
         # Loop
-        while timer.time() < time:
-            # Good: p = 0.8, d = 1, wait(10)
-            # Maybe better: p= 0.7, d= 2.0, wait(10)
-            # Fast: p= 0.4, d= 3.0
-            error = self.rightSensor.line - self.rightSensor.light()
-            pCorrection = error * 0.2
+        while timer.time() < time * 1000:
+            error = followSensor.line - followSensor.light()
+            pCorrection = error * 0.25
             dError = lastError - error
-            dCorrection = dError * 0.2
+            dCorrection = dError * 1.25
             self.moveSteering((pCorrection - dCorrection)*kSide, speed)
-            print("p= ", error, "\td= ", dError, "\tpCorr= ", pCorrection, "\tdCorr= ",dCorrection, "\tSteer= ", pCorrection - dCorrection)
             lastError = error
-            wait(10)
         self.stop()
 
     def turn2Line(self, speed, rightStop = True, time=5):
@@ -216,15 +220,23 @@ class Robot():
         # Exit
         self.drive(distanceAfter, speed)
 
-    def stop(self, brake=Stop.BRAKE):
+    def stop(self, brakeType=Stop.HOLD):
         # 3 options: Stop.BRAKE, Stop.COAST, Stop.HOLD
-        self.rightMotor.stop(brake)
-        self.leftMotor.stop(brake)
+        self.rightMotor.stop(brakeType)
+        self.leftMotor.stop(brakeType)
 
-
-    # Good: p = 0.8, d = 1, wait(10)
-    # Maybe better: p= 0.7, d= 2.0, wait(10)
-    # Fast: p= 0.4, d= 3.0
+    def wait4Button(self):
+        self.brick.speaker.beep()
+        while not any (self.brick.buttons.pressed()):
+            pass
+        
+    def gyroSet(self, newAngle=0):
+        wait(100)
+        #self.gyroSensor.speed()
+        #self.gyroSensor.angle()
+        wait(500)
+        self.gyroSensor.reset_angle(newAngle)
+        wait(200)
 
 
 
