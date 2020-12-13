@@ -76,7 +76,6 @@ class Robot():
         wait(200)
 
     def calibrate(self):
-        self.brick.speaker.play_file('calibratesong.wav')
         rightHigh = 40
         rightLow = 70
         leftHigh = 40
@@ -204,18 +203,23 @@ class Robot():
         stopSensor.waitForLine()
         self.stop()
     
-    def drive2Line(self, speed, distanceBefore, distanceAfter):
+    def drive2Line(self, speed, distanceBefore, distanceAfter, rightStop=True):
         # Startup
+        if rightStop:
+            stopSensor = self.rightSensor
+        else:
+            stopSensor = self.leftSensor
         self.drive(distanceBefore, speed)
 
         # Loop
         #while self.rightSensor.rgb() < 90:
         #    self.moveSteering(0, 70)
         # Start Driving
-        self.moveSteering(0, 250)
+        # *** OLD ONE *** self.moveSteering(0, 250)
+        self.moveSteering(0, 0.5*speed)
         # execute function wait until we detect a line
-        self.rightSensor.waitForLine()
-        self.stop()
+        stopSensor.waitForLine()
+        self.stop(Stop.HOLD)
 
         # Exit
         self.drive(distanceAfter, speed)
@@ -236,7 +240,8 @@ class Robot():
         #self.gyroSensor.angle()
         wait(500)
         self.gyroSensor.reset_angle(newAngle)
-        wait(200)
+        wait(500)
+        print("Gyro Reset. Goal:", newAngle, "  Actual: ", self.gyroSensor.angle())
 
 
 
