@@ -163,7 +163,7 @@ class Robot():
 
         lastError = 0
         # Loop
-        while not self.leftSensor.isWhite():
+        while not stopSensor.isWhite():
             error = followSensor.line - followSensor.light()
             pCorrection = error * 0.25
             dError = lastError - error
@@ -235,13 +235,14 @@ class Robot():
             pass
         
     def gyroSet(self, newAngle=0):
+        startAngle = self.gyroSensor.angle()
         wait(100)
         #self.gyroSensor.speed()
         #self.gyroSensor.angle()
         wait(500)
         self.gyroSensor.reset_angle(newAngle)
         wait(500)
-        print("Gyro Reset. Goal:", newAngle, "  Actual: ", self.gyroSensor.angle())
+        print("Gyro Start: ", startAngle, "Gyro Reset. Goal: ", newAngle, "  Actual: ", self.gyroSensor.angle())
 
 
 
