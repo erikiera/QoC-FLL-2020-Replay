@@ -7,7 +7,7 @@ def dancingqueen():
     #=============== START (in base) =================
 
     #============ STEP COUNTER =======================
-    if False:
+    if True:
         robot.drive(26, 550)            # Drive out of base (fast)
         robot.moveSteering(1, 40)       # Push Step Counter very slowly
         wait (10500)
@@ -24,7 +24,7 @@ def dancingqueen():
         print("Gyro Angle = ", robot.gyroSensor.angle())
         robot.turn(40, 300)
         # ------------ Checkpoint at Wheel Thing -------------
-        robot.drive(2.5, 450) 
+        robot.drive(2.9, 450) 
         robot.frontMotor.run(-750)
         robot.turn(0, 300) 
         robot.drive(3.0, 350)
@@ -55,33 +55,29 @@ def dancingqueen():
         robot.drive(18.4, -505) # at weight machine
         robot.gyroSet(-90)
         wait(500)
-        robot.drive(3.5, 400)
+        robot.drive(4.5, 400)
         robot.turn(-105, 200)
         robot.rearMotor.run(-750) # lowering forklift
         wait(5000)
         robot.rearMotor.stop()
-        #robot.rearMotor.run(750) # raising forklift
-        robot.drive(1, 300)
-        robot.turn(-130, 550)
+        robot.drive(5, 300)
+        robot.turn(-155, 550)
         #robot.rearMotor.stop()
-        wait(1000)
 
-        #======== line stuff -------------------------------------
-
-        robot.drive2Line(300, 0, 1.5, False)  # driving away from wieght machine to line 
-        robot.turn2Line(550, False)
-       # robot.turn(-180, 350)
-       # robot.drive2Line(400, 12, 0)
+        #------------------- Line Stuff -----------------------
+    if True:
+        robot.drive2Line(300, 0, 0, False)  # driving away from weight machine to line 
         robot.lineFollow4Time(300, 3, True, False)
-        #wait(2000)
+    
+        #================== SLIDE =====================
+    if True:
         robot.lineFollow2Line(200, True, False)
-        #robot.gyroSet(-180)
-        robot.drive(8, 300) 
-        robot.turn(-215, 300)
-        robot.drive(15, 500) #near children
-        #robot.turn(-270, 400)
-        #robot.drive(5,300)
-        #robot.turn(-225, 400)
+        robot.gyroSet(-180)
+        robot.drive(13, 500)
+        robot.rearMotor.run_time(750, 3100, Stop.COAST, False) # raising forklift
+        robot.turn(-220, 75)
+        wait(5000)
+
 
 
 
