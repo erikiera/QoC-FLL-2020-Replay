@@ -138,7 +138,7 @@ class Robot():
         offset = 20
         timer = StopWatch()   
         # Loop
-        while (abs(self.gyroSensor.angle() - angle) > 2)  & (timer.time() < time * 1000):
+        while (abs(self.gyroSensor.angle() - angle) > 0)  & (timer.time() < time * 1000):
             error = self.gyroSensor.angle() - angle
             #if error > 0 : 
             #    steering = 100
@@ -146,7 +146,8 @@ class Robot():
             #    steering = -100
             self.moveSteering(steering, speed * error * kTurn + copysign(offset,error))
         # Exit
-        self.stop()
+        self.stop(Stop.HOLD)
+        print("turning to: ", angle, "  gyro: ", self.gyroSensor.angle())
 
     def lineFollow2Line(self, speed, rightSide=True, rightFollow=True):
         # Startup
@@ -186,12 +187,14 @@ class Robot():
         lastError = 0
         # Loop
         while timer.time() < time * 1000:
+            # Experimental settings: kp = 0.2, kd = 0.4
             error = followSensor.line - followSensor.light()
-            pCorrection = error * 0.25
+            pCorrection = error * 0.25  # Used to be 0.25
             dError = lastError - error
-            dCorrection = dError * 1.25
+            dCorrection = dError * 1.2  # Used to be 1.25
             self.moveSteering((pCorrection - dCorrection)*kSide, speed)
             lastError = error
+            #wait(10)
         self.stop()
 
     def turn2Line(self, speed, rightStop = True, time=5):
@@ -235,6 +238,8 @@ class Robot():
             pass
         
     def gyroSet(self, newAngle=0):
+        #while not self.gyroCheck():
+           # pass
         startAngle = self.gyroSensor.angle()
         wait(100)
         #self.gyroSensor.speed()
@@ -244,7 +249,17 @@ class Robot():
         wait(500)
         print("Gyro Start: ", startAngle, "Gyro Reset. Goal: ", newAngle, "  Actual: ", self.gyroSensor.angle())
 
-
+    def gyroCheck(self):
+        angle1 = self.gyroSensor.angle()
+        wait(1000)
+        if self.gyroSensor.angle() != angle1:
+            print("drift detected")
+            self.brick.speaker.say("grace forgot her necklace")
+            return False
+        else:
+            print("absence of drift")
+            self.brick.speaker.say("grace remebered her necklace")
+            return True
 
 
 
