@@ -20,14 +20,14 @@ def dancingqueen():
         robot.lineFollow4Time(250, 3, False)
     #============ TREADMILL =============================
     if True:
-        robot.lineFollow2Line(300, False)
+        robot.lineFollow2Line(200, False)
         print("Gyro Angle = ", robot.gyroSensor.angle())
         robot.gyroSet(0)
-        robot.turn(0, 550)
+        robot.turn(2, 550)
         # ------------ Checkpoint at Wheel Thing -------------
         robot.frontMotor.run(750)
         robot.drive(6.3, 450)
-        wait(9000)
+        wait(8000)
         robot.stop()
         robot.frontMotor.stop()
         robot.frontMotor.run(-750)
@@ -39,40 +39,44 @@ def dancingqueen():
     #=================== ROWING MACHINE ===================
     if True:
         robot.turn(-90, 350)
-        robot.drive(13.5, -350) #going up towards rowing machine
-        robot.turn(-185, 350)
+        robot.drive(13.5, -350) #going towards rowing machine
+        robot.turn(-190, 350)
         #robot.rearMotor.run_time(350, 3000) #raising forklift
-        robot.drive(2.7, -300) #At weigh thing
+        robot.drive(3.2, -300) #At weigh thing
         robot.rearMotor.run_time(-750, 1500)#lowering forklift
-        robot.drive(5, 300)
+        robot.drive(4.5, 300)
         wait(500)
     #================= WEIGHT MACHINE =====================
     if True:
         robot.rearMotor.run_time(750, 5750, Stop.COAST, False) # raise all the way up
         wait(2000)
-        robot.turn(-85, 250) 
-        robot.drive(18.4, -505) # at weight machine
+        robot.turn(-78, 250) 
+        robot.drive(12.4, -505) # at weight machine #18.4
+        robot.turn(-90, 550)
+        robot.drive(5.5, -550)
         robot.gyroSet(-90)
         wait(500)
-        robot.drive(5, 400)
+        robot.drive(4.8, 400)
         robot.turn(-110, 200, 0.8)
         robot.rearMotor.run(-750) # lowering forklift
         wait(5000)
         robot.rearMotor.stop()
         robot.rearMotor.run_time(750, 1500, Stop.COAST, False)
         robot.drive(4.5, 300)
-        robot.turn(-155, 550)
+        robot.turn(-150, 550)
         #robot.rearMotor.stop()
 
     #------------------- Line Stuff -----------------------
     if True:
         robot.drive2Line(300, 0, 0, False)  # driving away from weight machine to line 
-        robot.lineFollow4Time(300, 3, True, False)
+        robot.lineFollow4Time(300, 1.5, True, False)
+        robot.lineFollow2Line(300, True, False)
         robot.rearMotor.run_time(-750, 1600, Stop.COAST, False)
+        robot.drive(3, 300)
     
     #================== SLIDE =====================
     if True:
-        robot.lineFollow2Line(200, True, False)
+        robot.lineFollow2Line(300, True, False)
         robot.gyroSet(-180)
         robot.drive(12.8, 500)
         robot.rearMotor.run_time(750, 2900, Stop.COAST, False) # raising forklift
@@ -92,9 +96,11 @@ def dancingqueen():
         robot.drive(3, 300) #hits color boxes
         robot.drive(5, -350)
         robot.turn(-350, 350)
-        robot.drive(8, -350)
-        robot.turn(-400, 400, 1.5) # under hoop
-        robot.rearMotor.run_time(750, 10000) # raising hoop
+        robot.drive(8.3, -350)
+        robot.turn(-403, 400, 1.5) # under hoop
+        robot.rearMotor.run_time(750, 5000) # raising hoop
+        robot.turn(-375, 400)
+        robot.drive(30, -550)
 
 
 def bench():
@@ -112,14 +118,12 @@ dancingqueen()
 #robot.rearMotor.run_time(750, 7500) # raising forklift
 
 
-
 print ("Time = ", clock.time())
 print("Gyro Angle = ", robot.gyroSensor.angle())
 
 #robot.rearMotor.run_time(350, 15000)
 #robot.lineFollow4Time(450, 5, False)
 #robot.lineFollow4Time(450, 1.5, True, False)
-
 
 
 # Coach's Notes:
