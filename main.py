@@ -115,29 +115,25 @@ clock = StopWatch()
 #bench()
 #robot.wait4Button()
 dancingqueen()
-#robot.rearMotor.run_time(750, 7500) # raising forklift
 
 
 print ("Time = ", clock.time())
 print("Gyro Angle = ", robot.gyroSensor.angle())
 
-#robot.rearMotor.run_time(350, 15000)
-#robot.lineFollow4Time(450, 5, False)
-#robot.lineFollow4Time(450, 1.5, True, False)
 
 
 # Coach's Notes:
 # SHORT-TERM:
-# - Look into straightening out exit from Treadmill (changes distance to Rowing Machine)
-# - Work on tire puller for Rowing Machine (maybe hitting mission model)
-# - Look into changing turn/approach to Weight Machine (turn harder, farther away)
-# - Make sure lift attachment can do all 4 challenges.
+# X Look into straightening out exit from Treadmill (changes distance to Rowing Machine)
+# X Work on tire puller for Rowing Machine (maybe hitting mission model)
+# X Look into changing turn/approach to Weight Machine (turn harder, farther away)
+# X Make sure lift attachment can do all 4 challenges.
 # MEDIUM-TERM:
-# - Clean up approach to Bocchia Red/Blue
-# - Start approach to Basketball
+# X Clean up approach to Bocchia Red/Blue
+# X Start approach to Basketball
 # - Build ball dropper for Basketball
-# - Basketball lifting
-# - Exit after basketball
+# X Basketball lifting
+# X Exit after basketball
 # - Adjust Bench detachment for reliability
 # LONG-TERM:
 # - Speed adjustments
