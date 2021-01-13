@@ -39,12 +39,12 @@ def dancingqueen():
     #=================== ROWING MACHINE ===================
     if True:
         robot.turn(-90, 350)
-        robot.drive(13.5, -350) #going towards rowing machine
+        robot.drive(14, -350) #going towards rowing machine
         robot.turn(-190, 350)
         #robot.rearMotor.run_time(350, 3000) #raising forklift
-        robot.drive(3.2, -300) #At weigh thing
+        robot.drive(3.3, -300) #At weigh thing
         robot.rearMotor.run_time(-750, 1500)#lowering forklift
-        robot.drive(4.5, 300)
+        robot.drive(5, 300)
         wait(500)
     #================= WEIGHT MACHINE =====================
     if True:
@@ -53,7 +53,7 @@ def dancingqueen():
         robot.turn(-78, 250) 
         robot.drive(12.4, -505) # at weight machine #18.4
         robot.turn(-90, 550)
-        robot.drive(5.5, -550)
+        robot.drive(6, -550)
         robot.gyroSet(-90)
         wait(500)
         robot.drive(4.8, 400)
@@ -78,6 +78,7 @@ def dancingqueen():
     if True:
         robot.lineFollow2Line(300, True, False)
         robot.gyroSet(-180)
+        robot.turn(-183, 400)
         robot.drive(12.8, 500)
         robot.rearMotor.run_time(750, 2900, Stop.COAST, False) # raising forklift
         robot.turn(-220, 100)
@@ -96,7 +97,7 @@ def dancingqueen():
         robot.drive(3, 300) #hits color boxes
         robot.drive(5, -350)
         robot.turn(-350, 350)
-        robot.drive(8.3, -350)
+        robot.drive(9, -350)
         robot.turn(-403, 400, 1.5) # under hoop
         robot.rearMotor.run_time(750, 5000) # raising hoop
         robot.turn(-375, 400)
@@ -140,4 +141,6 @@ print("Gyro Angle = ", robot.gyroSensor.angle())
 # - Straw man for last run
 # - Execute last run
 # - Discuss taking Slide child back to base
-# - 
+# - Dumper for cubes
+# - Routine and attachment for yellow cube
+# - Attachment for pull-up
