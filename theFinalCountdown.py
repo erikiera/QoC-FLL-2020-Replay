@@ -4,28 +4,25 @@ robot=Robot ()
 
 def thefinalcountdown():
     #=============== START (in base) =======================
-    #robot.gyroSet(0)
+    robot.gyroSet(0)
     #=============== PULL-UP BAR ==========================
     if True:
-        robot.drive2Line(550, 5, 0)                 #drive towards first line
-        robot.turn(10, 450)
-        robot.lineFollow4Time(200, 3, False, True)
-        robot.lineFollow2Line(350, False, True)     #line follow to the line near pull-up bar
+        robot.drive(33, 550)                        #drive towards first line
         robot.turn(75, 450)                         #turn
-        robot.drive2Line(450, 0, 0)                 #drive through pull-up bar
+        robot.drive2Line(450, 1, 0)                 #drive through pull-up bar
+        robot.turn(85, 400)
+        robot.rearMotor.run_time(400, 4000, Stop.COAST, False)        #raising hooks
         robot.lineFollow2Line(350, False, True)
-        robot.drive(15, 550)                        #drive forward and dump blocks
-        #robot.turn(75, 450)
-        robot.frontMotor.run_time(250, 1000)
-    #=============== DANCE =======================
-    if True:
-        robot.drive(7, -450)                        #back up
-        robot.turn(140, 450)                        #turn towards dance
-        robot.drive(13, 550)                        #drive towards dance
-        dancetime = StopWatch()
-        while dancetime.time() < 10000:             #dance
-            robot.turn(180, 350)
-            robot.turn(80, 350)
-
-robot.wait4Button
+        #robot.rearMotor.run_time(-800, 6000, Stop.COAST, False) 
+        robot.drive(12, 550)                                          #drive forward and dump blocks
+        robot.rearMotor.run_time(-800, 6000, Stop.COAST, False)       #starting lowering hook
+        robot.frontMotor.run_time(-800, 1000)
+        robot.drive(1,-450)
+        robot.turn(89, 400)
+        robot.drive(15, -500)                       #back up      
+        robot.rearMotor.run_time(-800, 5500,Stop.COAST, False)        #lifting robot
+        robot.frontMotor.run_time(800, 500)
+        wait(5000)
+ 
+robot.wait4Button()
 thefinalcountdown()
